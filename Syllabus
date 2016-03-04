@@ -1,0 +1,126 @@
+----------------------------------------------------------------------------------------------------------------------
+1+2. Why would you consider a Scripting language as JavaScript as your Backend Platform, and compare it to a strategy
+for example Java/JAX-RS/Tomcat.
+----------------------------------------------------------------------------------------------------------------------
+
+-----Pros-----
+
+- With a Java backend, you will usually still need Javascript for your frontend, meaning you will have to switch between
+Java and JavaScript constantly. Using 1 language for both sides is simply easier, and makes it easier to migrate code.
+
+- For using tools like Maven for a Java backend, you will need to specify it in the XML file. Everything is more
+accessible with Node.
+
+- JSON is a core part of JavaScript, so you don't need any additional libraries, or worry about formatting as much.
+
+- Node.js is faster.
+
+-----Cons-----
+
+- Java has 20 years of experience when it comes to server-side programming. It is therefore way safer.
+
+- Javascript might lack utility classes depending on what the desired program is. Java developers have invested
+a lot of time into complex packages for more scientific work.
+
+- Functions in JavaScript can be confusing when functions that don't get any answer return values such as undefined,
+NaN and null.
+
+- JavaScript is prone to deadlocks. If you don't write simple code and make sure that it works, the entire Server
+might lock up as a result.
+
+-----------------------------------------------------------------------------------------------------------------------
+3. Node.js uses a Single Threaded Non-blocking strategy to handle asynchronous tasks. Explain strategies to
+implement a Node.js based server architecture that still could take advantage of a multi-core Server.
+-----------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------
+4. Explain, using relevant examples, concepts related to the testing of a REST-API using Node/JavaScript +
+relevant packages.
+-----------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------
+5. Explain, using relevant examples, the Express concept; middleware.
+-----------------------------------------------------------------------------------------------------------------------
+
+-----Middleware-----
+var express = require("express");
+var app = express();
+
+var fruits = [
+    "Mango",
+    "Apple",
+    "Orange"
+]
+
+app.use("fruits/:name", function(req, res, next){
+    if(fruits.contains(req.params.name)) {
+        console.log('Fruit found:', req.params.name)
+    }else{
+        console.log('Fruit not found');
+    }
+    next();
+}, function(req, res, next){
+    console.log('Request: ', req.method);
+    next();
+});
+
+-----------------------------------------------------------------------------------------------------------------------
+6. Explain, using relevant examples, how to implement sessions, and the legal implications of doing this.
+-----------------------------------------------------------------------------------------------------------------------
+
+-----Basic session setup------
+var express = require('express');
+var app = express();
+
+app.use(express.cookieParser());
+app.use(express.session({secret: '420691337asd'}));
+
+app.get('/SessionExample', function(req, res) {
+    if(req.session.lastPage) {
+        res.write('Last page was: ' + req.session.lastPage + '. ');
+    }
+
+    req.session.lastPage = '/SessionExample';
+    res.send('Hello World');
+});
+-----------------------------------------------------------------------------------------------------------------------
+7. Compare the express strategy toward (server side) templating with the one you used with Java on second semester.
+-----------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------
+8. Explain, using relevant examples, your strategy for implementing a REST-API with Node/Express and show how you can
+"test" all the four CRUD operations programmatically using for example the Request package.
+-----------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------
+9. Explain, using relevant examples, about testing JavaScript code, relevant packages (Mocha etc.) and how to test
+asynchronous code.
+-----------------------------------------------------------------------------------------------------------------------
+
+Mocha: Testing framework.
+Chai: Assertion framework.
+
+-----AsyncMethod-----
+exports.calc = function(n1,n2,callback){
+    var result = n1+n2;
+    callback(result);
+    console.log(result)
+}
+
+----TestAsyncMethod----
+var chai = require('chai');
+var expect  = require('chai').expect;
+var calculator = require('./AsyncMethod');
+
+describe('Adds 2 numbers', function(){
+    it("Should return 10", function(done){
+        calculator.calc(5,5, function(res){
+            expect(res).to.be.equal(10);
+            done();
+        });
+    });
+});
+
+-----------------------------------------------------------------------------------------------------------------------
+10. Explain, using relevant examples, different ways to mock out databases, HTTP-request etc.
+-----------------------------------------------------------------------------------------------------------------------
