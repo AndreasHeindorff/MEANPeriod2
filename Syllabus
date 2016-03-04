@@ -158,6 +158,8 @@ var testJoke = {"id": 1234, "joke": "ha ha ha", "reference": "unknown"};
 
 var n = nock('http://jokes-plaul.rhcloud.com');
 
+
+//Mock is created here.
 describe('Joke API Get', function () {
     before(function (done) {
         n.get('/api/joke')
