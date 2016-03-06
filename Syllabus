@@ -33,10 +33,12 @@ might lock up as a result.
 implement a Node.js based server architecture that still could take advantage of a multi-core Server.
 -----------------------------------------------------------------------------------------------------------------------
 
------------------------------------------------------------------------------------------------------------------------
-4. Explain, using relevant examples, concepts related to the testing of a REST-API using Node/JavaScript +
-relevant packages.
------------------------------------------------------------------------------------------------------------------------
+Modules that enables "clustering" in Node.js runs as multiple single threaded processes under a "Master" Node.js
+process. You start the main process called the "Master Process". The Master Process starts and manages other processes
+called "Worker Processes", which do the actual work of handling requests.
+
+In order to implement clustering in your Node.js application, you "simply" need to identify which portions of your code
+is for the master, and which are for the workers.
 
 -----------------------------------------------------------------------------------------------------------------------
 5. Explain, using relevant examples, the Express concept; middleware.
@@ -87,10 +89,68 @@ app.get('/SessionExample', function(req, res) {
 7. Compare the express strategy toward (server side) templating with the one you used with Java on second semester.
 -----------------------------------------------------------------------------------------------------------------------
 
+The Express server side templating using different frameworks achieves the ability to combine web templates into
+finished web pages. The work flow for this process goes like this: The controller is given data from the model, and
+pass it on to the view, the view then sends data back to the controller, and then back to model.
+
+On the second semester we used: Model -> Controller -> Servlet/JSP
+Now we are using:               Model -> Controller/Router -> Jade/Handlebars etc.
+
 -----------------------------------------------------------------------------------------------------------------------
 8. Explain, using relevant examples, your strategy for implementing a REST-API with Node/Express and show how you can
 "test" all the four CRUD operations programmatically using for example the Request package.
 -----------------------------------------------------------------------------------------------------------------------
+
+Start with:
+
+var express    = require('express');
+var app        = express();
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+Registering all routes and endpoints under /api:
+
+app.use('/api', router);
+
+In order to test REST-API's I would use the request package, which works like Postman.
+
+If I have a endpoint that looks like the one below, which fetches a random fruit, and assigns it to the variable "fruit".
+
+router.get('/fruit/random', function(req,res,next){
+    res.json({fruit : fruits.getRandomFruit()});
+});
+
+I would implement a request method in a separate JavaScript file.
+
+var getRandom = {
+    url: "http://localhost:3000/api/fruit/random", method: "GET",
+    json : true
+};
+
+request(getFruit,function(error,res,body){
+    console.log(body.fruit);
+});
+
+Put/Delete/Post:
+
+router.post('/addFruit', function(req, res){
+    fruits.addFruit(req.body.fruit);
+    res.json({Message: "Fruit was added});
+});
+
+router.put('/fruit/:fruitid', function(req, res){
+    var id = req.params.fruitid;
+    fruit.allFruits[id] = req.body.fruit;
+    res.json({reply: "Fruit: " + id + " was removed"});
+});
+
+router.delete('/fruit/:fruitid', function(req, res){
+    var id = req.params.fruitid;
+    fruits.deleteFruit(id);
+    res.json({message: "Fruit: " + id + " was removed"});
+});
 
 -----------------------------------------------------------------------------------------------------------------------
 9. Explain, using relevant examples, about testing JavaScript code, relevant packages (Mocha etc.) and how to test
